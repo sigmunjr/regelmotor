@@ -13,90 +13,71 @@
     var Equal = rg.Equal;
     var RuleGenerator = new rg.RuleGenerator();
 
-    function getResultValueForArray(test) {
-        var first = Token.arrayToLinkedList(test);
-        var result = RuleGenerator.parse(first);
-        if (result) return result.value;
-        return result;
-    }
-
-    describe('TokenIterator', function () {
-        var first;
+    describe('Token', function () {
+        var test1;
 
         beforeEach(function () {
-            var prev = first = new Value(0, null, null);
-            for (var i = 1; i < 10; i++) {
-                var cur = new Value(i, prev, null);
-                if (prev) {
-                    prev.next = cur;
-                }
-                prev = cur;
-            }
+            test1 = [new Value(2), new Sum, new Value(1)]
         });
 
-        it('should iterate orderly', function () {
-            var it = first.chain();
-            var i = 0;
-            while (it.hasNext()) {
-                var token = it.next();
-                expect(token.value).toBe(i);
-                i++;
-            }
+        it('Tree is built correctly', function () {
+            var root = Token.buildTreeAndGetRoot(test1);
+            expect(root).toBe(test1[1]);
+            expect(root.children[0]).toBe(test1[0]);
+            expect(root.children[1]).toBe(test1[2]);
         })
     });
 
     describe('RuleGenerator', function () {
-        var first;
+        var test1 = [];
+        var test2 = [];
 
         describe('Summation', function () {
+            var test1 = [];
+            var test2 = [];
+
             beforeEach(function () {
-                var prev = first = null;
+                test1 = [new Value(2), new Sum, new Value(1)];
                 for (var i = 1; i < 5; i++) {
-                    var cur = new Value(i, prev, null);
-                    if (prev) {
-                        prev.next = cur;
-                    } else {
-                        first = cur;
-                    }
-                    cur.next = new Sum(cur, null);
-                    cur = cur.next;
-                    prev = cur;
+                    test2.push(new Value(i));
+                    test2.push(new Sum);
                 }
-                prev.prev.next = null;
+                test2.pop();
             });
 
             it('should sum correctly', function () {
-                var result = RuleGenerator.parse(first);
-                expect(result.value).toBe(10);
+                var result = RuleGenerator.parse(test1);
+                var result2 = RuleGenerator.parse(test2);
+                expect(result.value).toBe(3);
+                expect(result2.value).toBe(10);
             });
         });
 
         describe('Multiplication', function () {
+            var test1 = [];
+            var test2 = [];
+
             beforeEach(function () {
-                var prev = first = null;
+                test1 = [new Value(2), new Multiply, new Value(1)];
                 for (var i = 1; i < 5; i++) {
-                    var cur = new Value(i, prev, null);
-                    if (prev) {
-                        prev.next = cur;
-                    } else {
-                        first = cur;
-                    }
-                    cur.next = new Multiply(cur, null);
-                    cur = cur.next;
-                    prev = cur;
+                    test2.push(new Value(i));
+                    test2.push(new Multiply);
                 }
-                prev.prev.next = null;
+                test2.pop();
             });
 
             it('should multiply correctly', function () {
-                var result = RuleGenerator.parse(first);
-                expect(result.value).toBe(24);
+                var result1 = RuleGenerator.parse(test1);
+                var result2 = RuleGenerator.parse(test2);
+                expect(result1.value).toBe(2);
+                expect(result2.value).toBe(24);
             });
         });
 
         it('should multiply before sum', function () {
             var test1 = [new Value(1), new Sum(), new Value(2), new Multiply, new Value(3)];
-            expect(getResultValueForArray(test1)).toBe(7);
+            var result = RuleGenerator.parse(test1);
+            expect(result.value).toBe(7);
         });
 
         describe('boolean operators', function () {
@@ -105,9 +86,9 @@
                var test2 = [new Value(2), new LessThan(), new Value(1)];
                var test3 = [new Value(1), new LessThan(), new Value(2)];
 
-               expect(getResultValueForArray(test1)).toBeFalsy();
-               expect(getResultValueForArray(test2)).toBeFalsy();
-               expect(getResultValueForArray(test3)).toBeTruthy();
+               expect(RuleGenerator.parse(test1).value).toBeFalsy();
+               expect(RuleGenerator.parse(test2).value).toBeFalsy();
+               expect(RuleGenerator.parse(test3).value).toBeTruthy();
 
            });
             it('should implement "more than" correctly', function () {
@@ -115,9 +96,9 @@
                 var test2 = [new Value(2), new MoreThan(), new Value(1)];
                 var test3 = [new Value(1), new MoreThan(), new Value(2)];
 
-                expect(getResultValueForArray(test1)).toBeFalsy();
-                expect(getResultValueForArray(test2)).toBeTruthy();
-                expect(getResultValueForArray(test3)).toBeFalsy();
+                expect(RuleGenerator.parse(test1).value).toBeFalsy();
+                expect(RuleGenerator.parse(test2).value).toBeTruthy();
+                expect(RuleGenerator.parse(test3).value).toBeFalsy();
 
             });
             it('should implement "equal" correctly', function () {
@@ -125,9 +106,9 @@
                 var test2 = [new Value(2), new Equal(), new Value(1)];
                 var test3 = [new Value(1), new Equal(), new Value(2)];
 
-                expect(getResultValueForArray(test1)).toBeTruthy();
-                expect(getResultValueForArray(test2)).toBeFalsy();
-                expect(getResultValueForArray(test3)).toBeFalsy();
+                expect(RuleGenerator.parse(test1).value).toBeTruthy();
+                expect(RuleGenerator.parse(test2).value).toBeFalsy();
+                expect(RuleGenerator.parse(test3).value).toBeFalsy();
             });
         });
 
@@ -136,16 +117,16 @@
                 var test1 = [new Value(1), new Sum(), new Value(2), new Multiply, new Value(3), new If(), new Rule(false)];
                 var test2 = [new Value(1), new Sum(), new Value(2), new Multiply, new Value(3), new If(), new Value(2), new LessThan(), new Value(1)];
 
-                expect(getResultValueForArray(test1)).toBe(null);
-                expect(getResultValueForArray(test2)).toBe(null);
+                expect(RuleGenerator.parse(test1)).toBe(null);
+                expect(RuleGenerator.parse(test2)).toBe(null);
             });
 
             it('should give prior token if true', function () {
                 var test1 = [new Value(1), new Sum(), new Value(2), new Multiply, new Value(3), new If(), new Rule(true)];
                 var test2 = [new Value(1), new Sum(), new Value(2), new Multiply, new Value(3), new If(), new Value(2), new MoreThan(), new Value(1)];
 
-                expect(getResultValueForArray(test1)).toBe(7);
-                expect(getResultValueForArray(test2)).toBe(7);
+                expect(RuleGenerator.parse(test1).value).toBe(7);
+                expect(RuleGenerator.parse(test2).value).toBe(7);
             });
         });
 
@@ -154,16 +135,16 @@
                 var test1 = [new Value(22), new Else(), new Value(11)];
                 var test2 = [new Value(1), new Sum(), new Value(2), new Multiply, new Value(3), new If(), new Value(2), new MoreThan(), new Value(1), new Else(), new Value(4)];
 
-                expect(getResultValueForArray(test1)).toBe(22);
-                expect(getResultValueForArray(test2)).toBe(7);
+                expect(RuleGenerator.parse(test1).value).toBe(22);
+                expect(RuleGenerator.parse(test2).value).toBe(7);
             });
 
             it('should give new value if left token is null', function () {
                 var test1 = [new Else(), new Value(11)];
                 var test2 = [new Value(1), new Sum(), new Value(2), new Multiply, new Value(3), new If(), new Value(1), new MoreThan(), new Value(2), new Else(), new Value(4)];
 
-                expect(getResultValueForArray(test1)).toBe(11);
-                expect(getResultValueForArray(test2)).toBe(4);
+                expect(RuleGenerator.parse(test1).value).toBe(11);
+                expect(RuleGenerator.parse(test2).value).toBe(4);
             });
         });
     });
