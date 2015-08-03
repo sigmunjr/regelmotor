@@ -1,4 +1,4 @@
-module ruleAngular2 {
+module ruleCompiler {
   'use strict';
 
   export interface ITecThing {

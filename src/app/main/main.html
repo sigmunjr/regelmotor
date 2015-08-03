@@ -1,34 +1,23 @@
 <div layout="vertical" layout-fill>
 
-  <md-content>
-    <header>
-      <acme-navbar creationDate="main.creationDate" />
-    </header>
-
-    <section class="jumbotron">
-      <h1>'Allo, 'Allo!</h1>
-      <p class="lead">
-        <img src="assets/images/yeoman.png" alt="I'm Yeoman"><br>
-        Always a pleasure scaffolding your apps.
-      </p>
-      <md-button class="md-raised animated infinite" ng-class="main.classAnimation" ng-click="main.showToastr()">Splendid Toastr</md-button>
-      <p>
-        With ♥ thanks to the contributions of<acme-malarkey extra-values="['Yeoman', 'Gulp', 'Angular']" />
-      </p>
-    </section>
-
-    <div class="techs" layout-align="center">
-      <md-card ng-repeat="awesomeThing in main.awesomeThings | orderBy:'rank'">
-        <div class="thumbnail">
-          <img class="pull-right" ng-src="assets/images/{{ awesomeThing.logo }}" alt="{{ awesomeThing.title }}">
-          <div class="caption">
-            <h3>{{ awesomeThing.title }}</h3>
-            <p>{{ awesomeThing.description }}</p>
-            <p><a ng-href="{{ awesomeThing.url }}">{{ awesomeThing.url }}</a></p>
-          </div>
-        </div>
-      </md-card>
-    </div>
-  </md-content>
-
+    <md-content class="md-padding" layout="column">
+        <h1>hei</h1>
+        <md-chips ng-model="main.tokenList" md-on-append="main.append($chip)" md-require-match="true">
+            <md-autocomplete
+                    md-selected-item="main.selectedItem"
+                    md-search-text="main.searchText"
+                    md-items="item in main.validOperators(main.searchText)"
+                    md-item-text="item.name"
+                    md-selected-item-change="main.onItemSelect(main.selectedItem)"
+                    md-search-text-change="main.searchTextChange(main.searchText)"
+                    md-min-length="0"
+                    md-select-on-match
+                    >
+                <span md-highlight-text="main.searchText" ng-if="item">{{item.name}}</span>
+            </md-autocomplete>
+            <md-chip-template md-autocomplete-snap>{{$chip.title}}
+            </md-chip-template>
+        </md-chips>
+        <br/>
+    </md-content>
 </div>

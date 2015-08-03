@@ -1,5 +1,5 @@
 {
-  "name": "ruleAngular2",
+  "name": "ruleCompiler",
   "version": "0.0.0",
   "dependencies": {
     "angular-animate": "~1.4.0",
@@ -8,7 +8,7 @@
     "angular-sanitize": "~1.4.0",
     "restangular": "~1.5.1",
     "angular-route": "~1.4.0",
-    "angular-material": "~0.9.7",
+    "angular-material": "~0.10.0",
     "malarkey": "yuanqing/malarkey#~1.3.0",
     "toastr": "~2.1.1",
     "moment": "~2.10.3",

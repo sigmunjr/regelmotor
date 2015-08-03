@@ -11,25 +11,25 @@
 /// <reference path="../app/components/webDevTec/webDevTec.service.ts" />
 /// <reference path="../app/components/githubContributor/githubContributor.service.ts" />
 
-declare var malarkey: any;
-declare var toastr: Toastr;
-declare var moment: moment.MomentStatic;
+declare var malarkey:any;
+declare var toastr:Toastr;
+declare var moment:moment.MomentStatic;
 
-module ruleAngular2 {
-  'use strict';
+module ruleCompiler {
+    'use strict';
 
-  angular.module('ruleAngular2', ['ngAnimate', 'ngCookies', 'ngTouch', 'ngSanitize', 'restangular', 'ngRoute', 'ngMaterial'])
-    .constant('malarkey', malarkey)
-    .constant('toastr', toastr)
-    .constant('moment', moment)
-    .config(Config)
+    angular.module('ruleCompiler', ['ngAnimate', 'ngCookies', 'ngTouch', 'ngSanitize', 'restangular', 'ngRoute', 'ngMaterial'])
+        .constant('malarkey', malarkey)
+        .constant('toastr', toastr)
+        .constant('moment', moment)
+        .config(Config)
 
-    .config(RouterConfig)
+        .config(RouterConfig)
 
-    .run(RunBlock)
-    .service('githubContributor', GithubContributor)
-    .service('webDevTec', WebDevTecService)
-    .controller('MainController', MainController)
-    .directive('acmeNavbar', acmeNavbar)
-    .directive('acmeMalarkey', acmeMalarkey);
+        .run(RunBlock)
+        .service('githubContributor', GithubContributor)
+        .service('webDevTec', WebDevTecService)
+        .controller('MainController', MainController)
+        .directive('acmeNavbar', acmeNavbar)
+        .directive('acmeMalarkey', acmeMalarkey);
 }

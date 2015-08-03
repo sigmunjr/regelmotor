@@ -1,4 +1,4 @@
-module ruleAngular2 {
+module ruleCompiler {
   'use strict';
 
   interface IProjectsScope extends ng.IScope {

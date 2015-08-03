@@ -1,17 +1,17 @@
 (function () {
     'use strict';
-    var rg = ruleGenerator;
-    var Value = rg.Value;
-    var Rule = rg.Rule;
-    var Sum = rg.Sum;
-    var Multiply = rg.Multiply;
-    var If = rg.If;
-    var Else = rg.Else;
-    var Token = rg.Token;
-    var LessThan = rg.LessThan;
-    var MoreThan = rg.MoreThan;
-    var Equal = rg.Equal;
-    var RuleGenerator = new rg.RuleGenerator();
+    var rc = ruleCompiler;
+    var Value = rc.Value;
+    var Rule = rc.Rule;
+    var Sum = rc.Sum;
+    var Multiply = rc.Multiply;
+    var If = rc.If;
+    var Else = rc.Else;
+    var Token = rc.Token;
+    var LessThan = rc.LessThan;
+    var MoreThan = rc.MoreThan;
+    var Equal = rc.Equal;
+    var RuleCompiler = new rc.RuleEvaluator();
 
     describe('Token', function () {
         var test1;
@@ -28,7 +28,7 @@
         })
     });
 
-    describe('RuleGenerator', function () {
+    describe('RuleEvaluator', function () {
         var test1 = [];
         var test2 = [];
 
@@ -46,8 +46,8 @@
             });
 
             it('should sum correctly', function () {
-                var result = RuleGenerator.parse(test1);
-                var result2 = RuleGenerator.parse(test2);
+                var result = RuleCompiler.parse(test1);
+                var result2 = RuleCompiler.parse(test2);
                 expect(result.value).toBe(3);
                 expect(result2.value).toBe(10);
             });
@@ -67,8 +67,8 @@
             });
 
             it('should multiply correctly', function () {
-                var result1 = RuleGenerator.parse(test1);
-                var result2 = RuleGenerator.parse(test2);
+                var result1 = RuleCompiler.parse(test1);
+                var result2 = RuleCompiler.parse(test2);
                 expect(result1.value).toBe(2);
                 expect(result2.value).toBe(24);
             });
@@ -76,7 +76,7 @@
 
         it('should multiply before sum', function () {
             var test1 = [new Value(1), new Sum(), new Value(2), new Multiply, new Value(3)];
-            var result = RuleGenerator.parse(test1);
+            var result = RuleCompiler.parse(test1);
             expect(result.value).toBe(7);
         });
 
@@ -86,9 +86,9 @@
                var test2 = [new Value(2), new LessThan(), new Value(1)];
                var test3 = [new Value(1), new LessThan(), new Value(2)];
 
-               expect(RuleGenerator.parse(test1).value).toBeFalsy();
-               expect(RuleGenerator.parse(test2).value).toBeFalsy();
-               expect(RuleGenerator.parse(test3).value).toBeTruthy();
+               expect(RuleCompiler.parse(test1).value).toBeFalsy();
+               expect(RuleCompiler.parse(test2).value).toBeFalsy();
+               expect(RuleCompiler.parse(test3).value).toBeTruthy();
 
            });
             it('should implement "more than" correctly', function () {
@@ -96,9 +96,9 @@
                 var test2 = [new Value(2), new MoreThan(), new Value(1)];
                 var test3 = [new Value(1), new MoreThan(), new Value(2)];
 
-                expect(RuleGenerator.parse(test1).value).toBeFalsy();
-                expect(RuleGenerator.parse(test2).value).toBeTruthy();
-                expect(RuleGenerator.parse(test3).value).toBeFalsy();
+                expect(RuleCompiler.parse(test1).value).toBeFalsy();
+                expect(RuleCompiler.parse(test2).value).toBeTruthy();
+                expect(RuleCompiler.parse(test3).value).toBeFalsy();
 
             });
             it('should implement "equal" correctly', function () {
@@ -106,9 +106,9 @@
                 var test2 = [new Value(2), new Equal(), new Value(1)];
                 var test3 = [new Value(1), new Equal(), new Value(2)];
 
-                expect(RuleGenerator.parse(test1).value).toBeTruthy();
-                expect(RuleGenerator.parse(test2).value).toBeFalsy();
-                expect(RuleGenerator.parse(test3).value).toBeFalsy();
+                expect(RuleCompiler.parse(test1).value).toBeTruthy();
+                expect(RuleCompiler.parse(test2).value).toBeFalsy();
+                expect(RuleCompiler.parse(test3).value).toBeFalsy();
             });
         });
 
@@ -117,16 +117,16 @@
                 var test1 = [new Value(1), new Sum(), new Value(2), new Multiply, new Value(3), new If(), new Rule(false)];
                 var test2 = [new Value(1), new Sum(), new Value(2), new Multiply, new Value(3), new If(), new Value(2), new LessThan(), new Value(1)];
 
-                expect(RuleGenerator.parse(test1)).toBe(null);
-                expect(RuleGenerator.parse(test2)).toBe(null);
+                expect(RuleCompiler.parse(test1)).toBe(null);
+                expect(RuleCompiler.parse(test2)).toBe(null);
             });
 
             it('should give prior token if true', function () {
                 var test1 = [new Value(1), new Sum(), new Value(2), new Multiply, new Value(3), new If(), new Rule(true)];
                 var test2 = [new Value(1), new Sum(), new Value(2), new Multiply, new Value(3), new If(), new Value(2), new MoreThan(), new Value(1)];
 
-                expect(RuleGenerator.parse(test1).value).toBe(7);
-                expect(RuleGenerator.parse(test2).value).toBe(7);
+                expect(RuleCompiler.parse(test1).value).toBe(7);
+                expect(RuleCompiler.parse(test2).value).toBe(7);
             });
         });
 
@@ -135,16 +135,16 @@
                 var test1 = [new Value(22), new Else(), new Value(11)];
                 var test2 = [new Value(1), new Sum(), new Value(2), new Multiply, new Value(3), new If(), new Value(2), new MoreThan(), new Value(1), new Else(), new Value(4)];
 
-                expect(RuleGenerator.parse(test1).value).toBe(22);
-                expect(RuleGenerator.parse(test2).value).toBe(7);
+                expect(RuleCompiler.parse(test1).value).toBe(22);
+                expect(RuleCompiler.parse(test2).value).toBe(7);
             });
 
             it('should give new value if left token is null', function () {
                 var test1 = [new Else(), new Value(11)];
                 var test2 = [new Value(1), new Sum(), new Value(2), new Multiply, new Value(3), new If(), new Value(1), new MoreThan(), new Value(2), new Else(), new Value(4)];
 
-                expect(RuleGenerator.parse(test1).value).toBe(11);
-                expect(RuleGenerator.parse(test2).value).toBe(4);
+                expect(RuleCompiler.parse(test1).value).toBe(11);
+                expect(RuleCompiler.parse(test2).value).toBe(4);
             });
         });
     });
