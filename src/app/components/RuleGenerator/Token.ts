@@ -70,6 +70,11 @@ module ruleCompiler {
         private _isField:boolean;
         private _key:string;
 
+        constructor(name?:string) {
+            super();
+            if (name) this.key = name;
+        }
+
         get value():any {
             return this._value;
         }
@@ -98,18 +103,18 @@ module ruleCompiler {
     export class Value extends Primitive {
         value:number;
 
-        constructor(value?:number) {
+        constructor(value?:number, name?:string) {
+            super(name);
             this.value = value;
-            super();
         }
     }
 
     export class Rule extends Primitive {
         value:boolean;
 
-        constructor(value?:boolean) {
+        constructor(value?:boolean, name?:string) {
+            super(name);
             this.value = value;
-            super();
         }
     }
 }

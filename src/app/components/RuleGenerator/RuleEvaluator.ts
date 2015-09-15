@@ -46,7 +46,7 @@ module ruleCompiler {
     export class LessThan extends Operator {
         constructor() {
             super();
-            this.setPriority(20);
+            this.setPriority(30);
         }
 
         operate():Rule {
@@ -65,7 +65,7 @@ module ruleCompiler {
     export class MoreThan extends Operator {
         constructor() {
             super();
-            this.setPriority(20);
+            this.setPriority(30);
         }
 
         operate():Rule {
@@ -84,7 +84,7 @@ module ruleCompiler {
     export class Equal extends Operator {
         constructor() {
             super();
-            this.setPriority(20);
+            this.setPriority(30);
         }
 
         operate():Rule {
@@ -100,10 +100,29 @@ module ruleCompiler {
         }
     }
 
-    export class If extends Operator {
+    export class And extends Operator {
         constructor() {
             super();
             this.setPriority(20);
+        }
+
+        operate():Rule {
+            super.operate();
+            if (!this.children[0] || !this.children[1]) {
+                throw new Error('"Equal" operator should have parameters on each side');
+            }
+            if (this.children[0] instanceof Rule && this.children[1] instanceof Rule) {
+                var bool:boolean = (<Rule> this.children[0]).value && (<Rule> this.children[1]).value;
+                return new Rule(bool);
+            }
+            return null;
+        }
+    }
+
+    export class If extends Operator {
+        constructor() {
+            super();
+            this.setPriority(10);
         }
         operate():Token {
             super.operate();

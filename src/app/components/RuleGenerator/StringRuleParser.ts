@@ -1,45 +1,17 @@
 /// <reference path="Token.ts" />
 
 module ruleCompiler {
-    //interface stringToOperatorMap {
-    //    [name: RegExp]: Operator;
-    //}
-
-    //var operatorMap = [
-    //    {
-    //        key: /\d+/,
-    //        token: Value
-    //    },
-    //    {
-    //        key: /</,
-    //        token: LessThan
-    //    },
-    //    {
-    //        key: />/,
-    //        token: MoreThan
-    //    },
-    //    {
-    //        key: /=/,
-    //        token: Equal
-    //    },
-    //    {
-    //        key: /hvis/,
-    //        token: If
-    //    },
-    //    {
-    //        key: /ellers/,
-    //        token: Else
-    //    },
-    //];
 
     export class StringRuleParser {
         private _wordMap: {[key: string]: string};
 
         operatorMap = {
             '+': Sum,
+            '*': Multiply,
             '<': LessThan,
             '>': MoreThan,
             '=': Equal,
+            'og': And,
             'hvis': If,
             'ellers': Else
         };
@@ -63,8 +35,7 @@ module ruleCompiler {
                 } else if (!isNaN(<any>word)) {
                     parsed.push(new Value(parseFloat(<any>word)));
                 } else if (this.wordMap[word]) {
-                    var val =  (this.wordMap[word] === 'value') ? new Value() : new Rule();
-                    val.key = word;
+                    var val =  (this.wordMap[word] === 'value') ? new Value(null, word) : new Rule(null, word);
                     parsed.push(val);
                 }
             }

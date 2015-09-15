@@ -4,6 +4,7 @@
     var Value = rc.Value;
     var Rule = rc.Rule;
     var Sum = rc.Sum;
+    var And = rc.And;
     var Multiply = rc.Multiply;
     var If = rc.If;
     var Else = rc.Else;
@@ -29,8 +30,6 @@
     });
 
     describe('RuleEvaluator', function () {
-        var test1 = [];
-        var test2 = [];
 
         describe('Summation', function () {
             var test1 = [];
@@ -109,6 +108,20 @@
                 expect(RuleCompiler.parse(test1).value).toBeTruthy();
                 expect(RuleCompiler.parse(test2).value).toBeFalsy();
                 expect(RuleCompiler.parse(test3).value).toBeFalsy();
+            });
+
+            it('should implement "and" correctly', function () {
+                var test1 = [new Value(2), new Equal, new Value(2), new And, new Value(2), new LessThan, new Value(1)];
+                var test2 = [new Value(2), new LessThan, new Value(1), new And, new Value(2), new MoreThan, new Value(1)];
+
+                var test3 = [new Value(2), new Equal, new Value(2), new And, new Value(2), new MoreThan, new Value(1)];
+                var test4 = [new Value(5), new MoreThan, new Value(2), new And, new Value(2), new MoreThan, new Value(1)];
+
+                expect(RuleCompiler.parse(test1).value).toBeFalsy();
+                expect(RuleCompiler.parse(test2).value).toBeFalsy();
+
+                expect(RuleCompiler.parse(test3).value).toBeTruthy();
+                expect(RuleCompiler.parse(test4).value).toBeTruthy();
             });
         });
 
